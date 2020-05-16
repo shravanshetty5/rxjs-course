@@ -29,11 +29,11 @@ export class HomeComponent implements OnInit {
       );
 
       this.beginnerCourse$ = courses$.pipe(
-        map(resp => resp.filter(course => course.category === CourseType.beginner))
+        map((resp: Course[]) => resp.filter((course: Course) => course.category === CourseType.beginner))
       );
 
       this.advancedCourse$ = courses$.pipe(
-        map(resp => resp.filter(course => course.category === CourseType.advanced))
+        map((resp: Course[]) => resp.filter(course => course.category === CourseType.advanced))
       );
 
     }
