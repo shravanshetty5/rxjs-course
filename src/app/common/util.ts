@@ -6,7 +6,11 @@ export const fetchDataFromUrl = (url: string): Observable<any> => Observable.cre
   const signal = controller.signal;
   fetch(url, {signal})
     .then((resp) => {
-      return resp.json();
+      if (resp.ok) {
+        return resp.json();
+      } else {
+        observer.error(`Request failed with status code: ${resp.status}`);
+      }
     })
     .then((body: CourcesResponse) => {
       observer.next(body);

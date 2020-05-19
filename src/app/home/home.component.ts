@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, shareReplay, tap } from 'rxjs/operators';
+import { delay, map, retryWhen, shareReplay, take, tap } from 'rxjs/operators';
 import { Course, CourseType } from '../app.types';
 import { fetchDataFromUrl } from '../common/util';
 
@@ -25,8 +25,12 @@ export class HomeComponent implements OnInit {
       const courses$ = http$.pipe(
         tap(() => console.log('Make Http requests')),
         map(resp => Object.values(resp.payload)),
-        shareReplay()
-      );
+        shareReplay(),
+        retryWhen((error) => error.pipe(
+          delay(2000),
+          take(3),
+        )
+      ));
 
       this.beginnerCourse$ = courses$.pipe(
         map((resp: Course[]) => resp.filter((course: Course) => course.category === CourseType.beginner))
