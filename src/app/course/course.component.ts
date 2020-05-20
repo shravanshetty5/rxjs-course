@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import { Course } from '../app.types';
+import { debug, RxjsLoggingLevel } from '../common/debug';
 import { fetchDataFromUrl } from '../common/util';
 import { Lesson } from '../model/lesson';
 
@@ -28,19 +29,22 @@ export class CourseComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-
-        this.courseId = this.route.snapshot.params['id'];
-        this.course$ = fetchDataFromUrl(`/api/courses/${this.courseId}`);
+      this.courseId = this.route.snapshot.params['id'];
+      this.course$ = fetchDataFromUrl(`/api/courses/${this.courseId}`).pipe(
+        debug(RxjsLoggingLevel.INFO, 'course value')
+      );
     }
 
     ngAfterViewInit() {
       this.lessons$ = fromEvent<any>(this.input.nativeElement, 'keyup')
       .pipe(
         map(event => event.target.value),
+        startWith(''),
+        debug(RxjsLoggingLevel.TRACE, 'search'),
         debounceTime(400),
         distinctUntilChanged(),
-        startWith(''),
-        switchMap(search => this.loadLessons(search))
+        switchMap(search => this.loadLessons(search)),
+        debug(RxjsLoggingLevel.DEBUG, 'lessons value')
         );
       }
 

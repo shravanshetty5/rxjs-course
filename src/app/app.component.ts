@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RxjsLoggingLevel, setLoggingLevel } from './common/debug';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'app';
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    setLoggingLevel(RxjsLoggingLevel.ERROR);
+  }
 }
