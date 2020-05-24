@@ -1,11 +1,9 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import {Course} from "../model/course";
-import {FormBuilder, Validators, FormGroup} from "@angular/forms";
+import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import * as moment from 'moment';
-import {fromEvent} from 'rxjs';
-import {concatMap, distinctUntilChanged, exhaustMap, filter, mergeMap, tap} from 'rxjs/operators';
-import {fromPromise} from 'rxjs/internal-compatibility';
+import { Course } from "../model/course";
+import { Store } from '../store.service';
 
 @Component({
     selector: 'course-dialog',
@@ -24,6 +22,7 @@ export class CourseDialogComponent implements AfterViewInit {
 
     constructor(
         private fb: FormBuilder,
+        private store: Store,
         private dialogRef: MatDialogRef<CourseDialogComponent>,
         @Inject(MAT_DIALOG_DATA) course:Course ) {
 
@@ -44,7 +43,12 @@ export class CourseDialogComponent implements AfterViewInit {
 
     }
 
-
+    save() {
+      this.store.saveCourse(this.course.id, this.form.value).subscribe(
+        () => this.close(),
+        (err) => console.log("Error saving course", err)
+      );
+    }
 
     close() {
         this.dialogRef.close();

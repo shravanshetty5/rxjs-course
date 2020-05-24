@@ -9,3 +9,8 @@ export interface Course {
     category:string;
     lessonsCount:number;
 }
+
+export enum courseCatergory {
+  advanced = 'ADVANCED',
+  beginner = 'BEGINNER'
+}
